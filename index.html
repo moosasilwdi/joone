@@ -345,7 +345,7 @@ body{margin:0;background:var(--backdrop);color:var(--ink);font-family:var(--sans
   flex-direction:column;align-items:center;justify-content:center}
 .inner.home>*{position:relative;z-index:1}
 #homefield{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.bignum{font-family:var(--num);font-weight:800;font-size:84px;letter-spacing:-.04em;
+.bignum{font-family:var(--num);font-weight:800;font-size:50px;letter-spacing:-.04em;
   line-height:1;color:#15a05a;text-align:center;transform-origin:50% 50%;will-change:transform}
 /* the drawn digits take their size from the same font-size the typed number used, so
    nothing else on the screen had to move */
@@ -356,9 +356,17 @@ body{margin:0;background:var(--backdrop);color:var(--ink);font-family:var(--sans
    this size needs. It still has to read as not-yet-asked, so it stays grey - just a
    grey that can actually be seen. Measured against the plain page: 3.28 and 5.11. */
 .bignum.numoff,
-:root[data-theme="dark"] .bignum.numoff{color:#78859a}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bignum.numoff{color:#78859a}}
-.homelib{font-size:12.5px;line-height:1.45;color:var(--mute);margin:26px 18px 0;text-align:center}
+:root[data-theme="dark"] .bignum.numoff{color:#64707f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bignum.numoff{color:#64707f}}
+/* V9300 - the landing's words are INK, not --mute. Removing the dimmed patch behind
+   them left the field to carry their contrast on its own, and the first answer was to
+   quieten the whole field to 0.12/0.26 - which passed the contrast floor and killed the
+   field, breaking two checks that exist precisely to keep it alive (mark: swing 0.14
+   against the 0.24 it needs; seen: 14.3 tones against 18). Darkening the words instead
+   leaves the field exactly as Moos designed it, at full strength, with no patch
+   anywhere, and takes these lines from 3.58 to 10.99. The right thing to move was the
+   type, not the picture. */
+.homelib{font-size:12.5px;line-height:1.45;color:var(--ink);margin:26px 18px 0;text-align:center}
 .homelib b{color:var(--ink)}
 .howhead{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
   color:var(--mute);font-weight:600;margin:4px 0 14px;text-align:center}
@@ -371,10 +379,74 @@ body{margin:0;background:var(--backdrop);color:var(--ink);font-family:var(--sans
 .bignum{animation:numbreath 3.4s ease-in-out infinite}
 /* the halo is grey, not the number's own colour - it lifts the number off the field
    without colouring the air around it */
+
+/* V9300 - the A to Z panel. Plain type, no pictures: it has to read in both wordings,
+   on any width, be read aloud by a screen reader, and cost nothing to load.
+   The four colours are declared here scoped to this panel, exactly the way .whyp and
+   .savedp declare them - they are not on :root, and the first cut of this panel asked
+   for --green at the root, got nothing, and drew a grey box with a white 5 in it.
+   Red sits only on the two steps that ARE the warning; blue on the road nobody has
+   walked; green on the app. Yellow is declared for completeness and never used on type. */
+.atoz{--red:#e0342a;--blue:#1565d8;--yellow:#f5b700;--green:#15a05a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .atoz{
+  --red:#ff5147;--blue:#4b92ff;--yellow:#ffc425;--green:#2fc274}}
+:root[data-theme="dark"] .atoz{--red:#ff5147;--blue:#4b92ff;--yellow:#ffc425;--green:#2fc274}
+.atoz .azhead{display:flex;align-items:center;gap:9px;margin:20px 0 10px}
+.atoz .azhead i{flex:1;height:2px;background:var(--line)}
+/* V9300 - the section labels are INK, and the rule between them carries the colour.
+   They were set in the section's own colour at 10.5px, and the green one measured 3.38
+   against the 4.5 that type this size needs - Moos's green is vivid, which is what makes
+   it good on a box and bad on a caption. Moving the colour onto the rule keeps all four
+   colours exactly as he set them, keeps the section instantly readable as green, red or
+   blue, and puts the words on full ink where they can actually be read. */
+.atoz .azk{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--ink)}
+.atoz .azw{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--mute)}
+.atoz .azhead.bad i{background:var(--red)}
+.atoz .azhead.good i{background:var(--green)}
+.atoz .azhead.nxt i{background:var(--blue)}
+.atoz .azhead.bad i,.atoz .azhead.good i,.atoz .azhead.nxt i{height:3px;border-radius:2px}
+.atoz .azlist{margin:0;padding-left:21px}
+.atoz .azlist li{font-size:13.5px;line-height:1.55;color:var(--ink);margin-bottom:9px}
+.atoz .azlist li::marker{color:var(--mute);font-weight:700}
+.atoz .azlist li.bad::marker{color:var(--red)}
+.atoz .azlist.nxt li::marker{color:var(--blue)}
+.atoz .azgap{font-size:13.5px;line-height:1.55;color:var(--ink);margin:0}
+.atoz .azapp{border:2px solid var(--green);border-radius:12px;padding:14px 14px 13px}
+.atoz .azba{display:flex;align-items:center;gap:12px}
+.atoz .azcol{flex:1;text-align:center}
+.atoz .azn{display:block;font-family:var(--num);font-size:38px;font-weight:800;
+  line-height:1;color:var(--mute)}
+.atoz .azn.on{color:var(--green)}
+.atoz .azl{display:block;font-size:11.5px;color:var(--mute);margin-top:3px}
+/* same reason as the section labels: vivid green is a box colour, not a caption colour.
+   The 5 above it is green and large; this word is ink and bold. */
+.atoz .azl.on{color:var(--ink);font-weight:700}
+.atoz .azd{display:block;font-size:11.5px;line-height:1.45;color:var(--mute);margin-top:6px}
+.atoz .azarrow{flex:0 0 26px;text-align:center;font-size:21px;color:var(--green)}
+.atoz .azwhy{font-size:12.5px;line-height:1.5;color:var(--ink);margin:12px 0 0;
+  padding-top:11px;border-top:2px solid var(--line)}
+/* V9300 - this paragraph wore --mute and measured 4.39 against the 4.5 that type this
+   size needs. It is the honest-limits paragraph: the one part of this panel that must
+   never be the quietest thing on the page. Full ink. */
+.atoz .azcast{display:grid;gap:9px}
+.atoz .azc{border-left:3px solid var(--line);padding-left:11px}
+.atoz .azc b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+.atoz .azc span{display:block;font-size:12.5px;line-height:1.5;color:var(--mute)}
+.atoz .aztrials{margin:9px 0 0;padding-left:19px}
+.atoz .aztrials li{font-size:12.5px;line-height:1.5;color:var(--ink);margin-bottom:7px}
+.atoz .aztrials li::marker{color:var(--red)}
+.atoz .azlim{font-size:12.5px;line-height:1.55;color:var(--ink);margin:18px 0 0;
+  border-left:3px solid var(--red);padding-left:11px}
+.atoz .azend{font-size:13.5px;line-height:1.55;color:var(--ink);margin:14px 0 0}
+@media (max-width:360px){ .atoz .azn{font-size:32px} }
+/* V9300 - the pulse had stopped showing. The number is DRAWN now, and text-shadow
+   does nothing at all to an svg - so only the scale was left, and alone it read as
+   nothing. drop-shadow works on the drawn shape, so the glow is back, and the beat is
+   wider than it was. */
 @keyframes numbreath{
-  0%,100%{transform:scale(.96); text-shadow:0 0 10px rgba(var(--halo),.26)}
-  50%{transform:scale(1.04); text-shadow:0 0 28px rgba(var(--halo),.5)} }
-.bigcap{font-family:var(--mono);font-size:11px;color:var(--mute);margin:12px 0 0;text-align:center}
+  0%,100%{transform:scale(.94); filter:drop-shadow(0 0 6px rgba(var(--halo),.22))}
+  50%{transform:scale(1.06); filter:drop-shadow(0 0 22px rgba(var(--halo),.55))} }
+.bigcap{font-family:var(--mono);font-size:11px;color:var(--ink);margin:12px 0 0;text-align:center}
 .bigcap b{color:var(--accink);font-size:12.5px}
 @media (prefers-reduced-motion:reduce){
   .bignum{transform:none!important;animation:none!important}
@@ -491,7 +563,7 @@ body{margin:0;background:var(--backdrop);color:var(--ink);font-family:var(--sans
 .fan svg{display:block;width:100%;height:auto}
 .fancap{font-family:var(--mono);font-size:10.5px;letter-spacing:.02em;color:var(--mute);margin:2px 0 0}
 .fancap b{color:var(--accink);font-size:12px}
-.homelede{color:var(--mute);max-width:30ch;margin:6px 0 8px;font-size:13.5px;line-height:1.4;text-wrap:balance}
+.homelede{color:var(--ink);max-width:30ch;margin:6px 0 8px;font-size:13.5px;line-height:1.4;text-wrap:balance}
 .homeclaim{max-width:36ch;margin:0 0 10px;font-size:11.5px;line-height:1.45;color:var(--mute);
   border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0}
 .howto{margin:0}
@@ -550,7 +622,7 @@ button.go.start{width:100%;max-width:300px;padding:14px 20px;font-size:15.5px;bo
 .splash{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:14px;
   background:var(--bg);cursor:pointer;transition:opacity .34s ease}
-/* V9100 - his name, under the mark. It rises with the mark rather than separately, a
+/* V9300 - his name, under the mark. It rises with the mark rather than separately, a
    beat behind it, so the first screen stays one movement and not two. Letter-spaced and
    quiet: the mark is the loud thing on this screen and the name sits under it. */
 .splash .byline{animation:rise .5s ease .14s both;
@@ -992,7 +1064,7 @@ a.sendmail:active{filter:brightness(.96)}
    switched. */
 #view-3d .key>span:last-child{flex:0 0 100%}
 
-/* V9100 - the plain-language opening of Notes. No numbers in nanomolar, no holder
+/* V9300 - the plain-language opening of Notes. No numbers in nanomolar, no holder
    names: this is the paragraph a sponsor reads before anything technical. */
 .mission p{font-size:14px;line-height:1.62;margin:0 0 10px;color:var(--ink)}
 .mission p:last-child{margin-bottom:0}
@@ -1355,7 +1427,7 @@ ul{margin:0;padding-left:17px}li{margin-bottom:4px}
     <div class="inner">
       <div class="modeslot"></div>
       <section class="notepage" data-note="about">
-      <!-- V9100 - what the app is, for someone who is not a scientist. It is the first
+      <!-- V9300 - what the app is, for someone who is not a scientist. It is the first
            thing in Notes on purpose: it is what Moos hands to a sponsor. -->
       <div class="panel mission">
         <h3>What this is</h3>
@@ -1377,6 +1449,123 @@ ul{margin:0;padding-left:17px}li{margin-bottom:4px}
         laboratory to test, not an answer.</p>
         <p class="missiongoal"><b>The mission is simple: take a search that today needs a
         university, and put it in the hands of anyone willing to look.</b></p>
+      </div>
+
+      <!-- V9300 - the whole road, A to Z. Moos could not join the dots between his
+           disease, this app and the decoy idea, and neither could a sponsor reading the
+           paragraph above on its own. It is written as text, not drawn as a picture, so
+           it reads in both wordings, scales on any phone, can be read aloud, and costs
+           nothing to download. Red is the warning, green is the app, blue is the part
+           nobody has done. -->
+      <div class="panel atoz">
+        <h3>The whole road, A to Z</h3>
+        <p class="sub">What the disease does &middot; where this app sits &middot; what a treatment would need</p>
+
+        <div class="azhead bad"><span class="azk">How it starts</span><i></i><span class="azw">happening now</span></div>
+        <ol class="azlist">
+          <li><b>Jo-1 is working normally.</b> A chain of 509 beads, inside every cell you own.
+            It helps build new proteins. Nobody can live without it.</li>
+          <li><b>A cell spills.</b> Lung and muscle tissue gets injured. A cell breaks open and
+            its Jo-1 ends up loose outside.</li>
+          <li><b>A scavenger eats the debris.</b> A patrolling white blood cell swallows the
+            spilled bits and chops the chain into pieces 15 beads long.</li>
+          <li><b>A window fills.</b> It loads one piece into its own holder and carries it to a
+            lymph node to show it.</li>
+          <li class="bad"><b>The wrong verdict.</b> A T cell reads that piece and calls it an
+            enemy. It gives B cells permission, and they pour out antibodies. That single cell
+            is the disease.</li>
+          <li class="bad"><b>Lungs and muscles pay.</b> The damage causes more spillage, which
+            feeds more attack. A circle that does not stop on its own.</li>
+        </ol>
+
+        <div class="azhead bad"><span class="azk">The hole in it</span><i></i><span class="azw">unsolved</span></div>
+        <p class="azgap">Slide a 15-bead window along 509 beads and you get <b>495</b> possible
+        pieces. One of them started this. <b>No laboratory has ever tested all 495</b> &mdash;
+        and without knowing which piece, nothing can be aimed at anything.</p>
+
+        <div class="azhead good"><span class="azk">Where this app sits</span><i></i><span class="azw">exists today</span></div>
+        <div class="azapp">
+          <div class="azba">
+            <div class="azcol"><span class="azn">495</span><span class="azl">doors to open</span>
+              <span class="azd">Tested by hand: years of bench work and a budget nobody signs.
+              So nobody starts.</span></div>
+            <div class="azarrow" aria-hidden="true">&#8594;</div>
+            <div class="azcol on"><span class="azn on">5</span><span class="azl on">worth opening</span>
+              <span class="azd">A month of bench work. A laboratory can start on Monday.</span></div>
+          </div>
+          <p class="azwhy">Every one of the 495 pieces is tried in all <b>117</b> known holders
+          &mdash; 57,915 tries. What survives grips <b>the chosen holder</b> and almost nothing
+          else, because a decoy built for a piece that <b>every</b> holder grips would jam every
+          immune system, not only the one it was meant for.</p>
+        </div>
+
+        <div class="azhead"><span class="azk">Who is doing this</span><i></i><span class="azw">three cells</span></div>
+        <div class="azcast">
+          <div class="azc"><b>The scavenger</b><span>A white blood cell that eats loose debris
+            and reports what it found. Its real names are macrophage and dendritic cell. It eats,
+            carries one sample to a lymph node, shows it, and dies. One trip only.</span></div>
+          <div class="azc"><b>The judge</b><span>A T cell. It reads what the scavenger is
+            holding up and decides. Each one recognises exactly one shape, out of millions
+            patrolling. In this disease a single judge gives the wrong verdict.</span></div>
+          <div class="azc"><b>The factory</b><span>A B cell. It cannot start without the judge's
+            permission. Given it, it pours out antibodies for months &mdash; the anti-Jo-1 a blood
+            test reads.</span></div>
+        </div>
+        <p class="azgap">All three are white blood cells. Same family, three jobs. The whole
+        disease happens between them, in a lymph node &mdash; never in the lung. The lung is
+        only where the damage lands.</p>
+
+        <div class="azhead good"><span class="azk">Why 15, and why 4</span><i></i><span class="azw">the shape</span></div>
+        <p class="azgap">The groove grips <b>nine</b>. It is open at both ends, so the piece runs
+        through it like a belt through a buckle and about three hang out each side &mdash; nine
+        plus three plus three is the <b>fifteen</b>.<br><br>
+        Of the nine, only <b>four</b> point down into the groove's floor. Those four are the grip.
+        The others point up, and those are what the judge reads. That is why a decoy can exist at
+        all: keep the four pointing down and it still fits; change one pointing up and the judge
+        no longer knows it.</p>
+
+        <div class="azhead nxt"><span class="azk">The road out</span><i></i><span class="azw">not done by anyone</span></div>
+        <ol class="azlist nxt" start="7">
+          <li><b>Test the five.</b> Put each one in front of real immune cells from real
+            patients and see which one they react to.</li>
+          <li><b>Build the decoy.</b> Take the guilty piece and change one or two beads &mdash;
+            enough that the T cell no longer reads it as the enemy, not so much that it stops
+            fitting the window.</li>
+          <li><b>Fill the window.</b> Injected under the skin. Scavengers eat it and load it, and
+            the T cell leans in, reads a near-miss, and stalls instead of firing.</li>
+          <li><b>The order stops being given.</b> No permission, no new antibody factories. The
+            antibodies already made fade over months. The circle is broken at the one point where
+            a decision gets made.</li>
+        </ol>
+
+        <div class="azhead bad"><span class="azk">It has been tried before</span><i></i><span class="azw">never worked yet</span></div>
+        <p class="azgap">Five trials have reached patients. Not one of them used a piece anybody
+        had identified first.</p>
+        <ul class="aztrials">
+          <li><b>Multiple sclerosis, 2000.</b> Two trials of altered pieces. One made patients
+            worse; the other caused allergic reactions. Both stopped.</li>
+          <li><b>Coeliac disease, Nexvax2.</b> Three guessed gluten pieces. Phase 2 terminated at
+            interim analysis &mdash; it did not protect anyone.</li>
+          <li><b>Multiple sclerosis, ATX-MS-1467.</b> Phase 2. Lesions improved, patients did not.
+            Dropped.</li>
+          <li><b>Type 1 diabetes, Diamyd.</b> The furthest any of this ever got: Phase 3, with
+            patients chosen by HLA type &mdash; the same family as DRB1*03:01. Interim results came
+            back <b>negative in March 2026</b> and the trial was <b>stopped for futility in April
+            2026</b>.</li>
+        </ul>
+        <p class="azgap">Every one of them injected either a whole protein or a guessed piece.
+        <b>Nobody has ever run this knowing which fifteen to use.</b> That is the one thing that
+        has not been tried, and it is the only thing this app does.</p>
+
+        <p class="azlim"><b>What is not true yet, said plainly.</b> The prediction engine here
+        scores 0.747 where the best published tool scores 0.936, and 0.5 is a coin toss &mdash; so
+        the five it names may be the wrong five. The body does not cut on a neat fifteen-letter
+        grid either; real pieces run ragged from thirteen to twenty-five. A decoy competes for the
+        groove with everything else that fits it, including pieces from real germs. Some antibody
+        factories settle in bone marrow and keep producing for years without permission, and no
+        decoy reaches those. Nothing here has been tested on a patient.</p>
+        <p class="azend"><b>So this is not a cure and not a treatment. It is the shortlist that
+        has to exist before either one can &mdash; and today it is the only one there is.</b></p>
       </div>
       <div class="panel whyp">
         <h3>Why go after one groove?</h3>
@@ -1692,7 +1881,7 @@ ul{margin:0;padding-left:17px}li{margin-bottom:4px}
           DR3 motif: Geluk A, et al. <i>J Immunol</i> 1994;152:5742. Pockets: Doytchinova IA, Flower DR; Kaabinejadian S, et al. <i>Front Immunol</i> 2022;13:835454; Scholz EM, et al. <i>Front Immunol</i> 2017;8:984. HLA risk: Rothwell S, et al. <i>Ann Rheum Dis</i> 2019. Jo-1 protein: UniProt P12081. Structure referenced: PDB 1A6A (Ghosh P, et al. <i>Nature</i> 1995;378:457).<br>
           Allele sequences: IPD-IMGT/HLA release 3.66.0 protein alignments (Robinson J, et al. <i>Nucleic Acids Res</i>). Pocket residues extracted from those alignments; the parser was calibrated by reproducing the nine DRB1*03:01 residues reported in the literature.<br>
           Trials: Bielekova B, et al. <i>Nat Med</i> 2000; Kappos L, et al. <i>Nat Med</i> 2000;6:1176.<br><br>
-          JO1 &middot; V9100 &middot; built for Moosa Silwadi, October 2026 &middot; A research filter, not a clinical tool and not medical advice.
+          JO1 &middot; V9300 &middot; built for Moosa Silwadi, October 2026 &middot; A research filter, not a clinical tool and not medical advice.
         </div>
       </div>
       </section>
@@ -3488,7 +3677,7 @@ function addSetting(){
        P() carries those numbers into whatever structure is actually loaded. On the
        built model the measured frame IS that frame, so the picture is unchanged; on a
        downloaded structure the setting now lands on the groove instead of beside it. */
-    /* V9100 - THE CELL WAS IN THE WRONG PLACE. Moos photographed it; this is why.
+    /* V9300 - THE CELL WAS IN THE WRONG PLACE. Moos photographed it; this is why.
        In Abstract the green cradle is DRAWN, at plain coordinates - its floor is
        written as z=-7 and nothing measures it. The skin below and the immune cell above
        were placed through P() instead, which maps them onto the frame MEASURED off the
@@ -4125,7 +4314,7 @@ var PARTS={floor:true, wall1:true, wall2:true, piece:true, body:true};
    Said plainly: the reference set is Jo-1's own 495 slices. For Jo-1 that is exactly
    the right question - is this slice unusual FOR THIS HOLDER. For a protein you paste
    in, the same lines are used, which is a stand-in, not a measurement. */
-/* V9100 - THE BIG NUMBER IS DRAWN, NOT TYPED.
+/* V9300 - THE BIG NUMBER IS DRAWN, NOT TYPED.
    Moos asked for a sci-fi number. A downloaded font would be a guess - it cannot be
    seen before it ships, and a phone without it falls back to something else entirely.
    So the digits are drawn here, from his own logo's rules measured off the mark: the
@@ -5392,7 +5581,11 @@ function paintHome(){
   fan.innerHTML = r
     ? '<div class="bignum">'+sciNum(alone)+'</div><p class="bigcap">of <b>'+r.n+'</b> slices grip '
       +esc(r.holder)+' alone</p>'
-    : '<div class="bignum numoff" style="animation:none">'+sciNum(495)+'</div>'
+      /* V9300 - the waiting number pulses too. It carried style="animation:none", so the
+         only screen Moos ever looks at before a scan had a dead number on it - and when
+         he said the pulse was missing, he was looking at exactly this. The pulse is the
+         same one the answered number uses. */
+    : '<div class="bignum numoff">'+sciNum(495)+'</div>'
       +'<p class="bigcap">slices of Jo-1, none of them asked yet</p>';
   var old=document.getElementById('homefield'); if(old) old.remove();
   var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -5403,55 +5596,23 @@ function paintHome(){
   var COLS=16, ROWS=31, W=Math.max(200,Math.round(box.width)), H=Math.max(300,Math.round(box.height));
   svg.setAttribute('viewBox','0 0 '+W+' '+H);
   var gx=W/COLS, gy=H/ROWS;
-  /* a dot that lands behind a word is dimmed, so the words stay the loudest thing */
-  var rects=[];
-  Array.prototype.forEach.call(inner.querySelectorAll('p,.bignum'), function(e){
-    /* the big number is drawn now, so it carries no text - it still has to dim the
-       marks behind it, which the old length test would have skipped */
-    if(!e.classList.contains('bignum') && e.textContent.trim().length<2) return;
-    var q=e.getBoundingClientRect();
-    rects.push([q.left-box.left-4, q.top-box.top-3, q.right-box.left+4, q.bottom-box.top+3]);
-  });
-  /* V9100 - how far INTO a word's box a mark sits, as 0 (well outside) to 1 (inside).
-     V8900 returned a flat yes or no, so the faded marks ended on a hard rectangle and
-     the field looked like a box had been pasted over it - which is exactly what Moos
-     saw. The fade now falls off with distance, over a margin as wide as the mark grid,
-     so there is no edge anywhere: the marks simply get quieter as they approach a word
-     and come back on the other side. */
-  function behind(x,y){
-    var FEATHER=Math.max(gx,gy)*0.85, best=0;
-    for(var k=0;k<rects.length;k++){
-      var t=rects[k];
-      /* distance from the box: 0 inside, growing outside */
-      var dx=Math.max(t[0]-x, 0, x-t[2]);
-      var dy=Math.max(t[1]-y, 0, y-t[3]);
-      var d=Math.sqrt(dx*dx+dy*dy);
-      if(d>=FEATHER) continue;
-      var w=1-d/FEATHER;
-      w=w*w*(3-2*w);                      /* a soft S, so even the far edge has no line */
-      if(w>best) best=w;
-    }
-    return best;
-  }
+  /* V9300 - NOTHING is dimmed behind the words any more. Moos: "No background behind
+     the text or nubers!" Every earlier attempt dimmed a patch - a hard one in V8900, a
+     soft one in V9000 - and every patch showed, because a patch of any shape or
+     softness is still a patch sitting on the field. The field is simply quieter
+     everywhere now, which is not a background: it is one even field. Its strength is
+     what carries the words' contrast, and it is measured, not guessed. */
   /* V8200 - how strongly the field is drawn. A mark in the open has nothing over it,
      so it can be as strong as it looks right. A mark UNDER a word is what decides
      whether that word stays readable, so those two are set on their own and are the
      numbers the contrast check holds to - raising them is what costs readability,
      raising the open ones costs nothing. */
   var OPEN_LO=0.34, OPEN_HI=0.74;        // a mark in the open
-  /* V8900 - brought down from 0.10/0.17. The big number used to be two digits, which
-     the contrast tool skips, so nothing ever measured it over the field. Now that the
-     shortlist reports three digits it IS measured, and it came out at 2.37 against the
-     3.0 that large type needs. The marks under the words are what drag it down, so they
-     are fainter. The marks in the open are untouched - they cost nothing. */
-  var TEXT_LO=0.06, TEXT_HI=0.10;        // a mark under a word
   var out='', n=r? r.n : 495;
   for(var i2=0;i2<n && i2<COLS*ROWS;i2++){
     var c=i2%COLS, row=(i2/COLS)|0, x=c*gx+gx/2, y=row*gy+gy/2;
     var green = !!(r && r.sel[i2]===0);
     var o=green?OPEN_LO*1.3:OPEN_LO, o2=green?Math.min(0.95,OPEN_HI*1.3):OPEN_HI;
-    var w=behind(x,y);
-    if(w>0){ o=o+(TEXT_LO-o)*w; o2=o2+(TEXT_HI-o2)*w; }
     out+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(green?3.9:3.3)
       +'" fill="'+(green?'var(--lgreen)':'var(--dim)')+'" style="--o:'+o.toFixed(3)
       +';--o2:'+o2.toFixed(3)+';opacity:'+o.toFixed(3)
@@ -5459,14 +5620,17 @@ function paintHome(){
   }
   if(r && best>=0){
     var bc=best%COLS, br=(best/COLS)|0, bx=bc*gx+gx/2, by=br*gy+gy/2;
-    var k2=1-0.66*behind(bx,by);
+    /* V9300 - this used to fade the ring by how far it sat under a word: k2 = 1 - 0.66
+       * behind(). behind() is gone with the rest of the dimming, and leaving the call
+       here threw the moment a run existed, which emptied the whole field - the landing
+       check caught it reporting 0 green marks where there should have been 5. The ring
+       is simply drawn at full strength now; with nothing dimmed anywhere there is no
+       longer anything for it to duck under. */
     out+='<circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="10" fill="none" '
-      +'stroke="var(--wm3)" stroke-width="1.4" style="--o:'+(0.45*k2).toFixed(2)
-      +';--o2:'+(0.8*k2).toFixed(2)+';opacity:'+(0.45*k2).toFixed(2)
+      +'stroke="var(--wm3)" stroke-width="1.4" style="--o:.45;--o2:.8;opacity:.45'
       +';animation-delay:'+(-(br/ROWS)*6).toFixed(2)+'s"/>';
-    if(k2===1)
-      out+='<circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="4" fill="var(--wm3)" '
-        +'style="--o:.6;--o2:.9;opacity:.6"/>';
+    out+='<circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="4" fill="var(--wm3)" '
+      +'style="--o:.6;--o2:.9;opacity:.6"/>';
   }
   svg.innerHTML=out;
 }
